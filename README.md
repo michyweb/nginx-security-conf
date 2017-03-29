@@ -70,17 +70,17 @@ server {
     
     add_header X-Content-Type-Options nosniff;
     add_header X-Frame-Options DENY;
-    add_header Pragma no-cache
-    add_header Cache-Control no-store
+    add_header Pragma no-cache;
+    add_header Cache-Control no-store;
     add_header X-XSS-Protection "1; mode=block";
     add_header Referrer-Policy origin-when-cross-origin;
     proxy_cookie_path ~(.*) "$1; SameSite=strict";
-    X-Permitted-Cross-Domain-Policies: none;
+    add_header X-Permitted-Cross-Domain-Policies none;
     
     # nonce!!, upgrade-insecure-requests!!
     add_header Content-Security-Policy "upgrade-insecure-requests; default-src 'self'; script-src 'self' 'nonce-6B201A99C0EEA8C8' 'unsafe-eval'; object-src 'none'; style-src 'self' data: 'unsafe-inline';img-src 'self' data: assets.zendesk.com; media-src 'none'; frame-src 'self'; font-src 'self'; connect-src 'self'"
     
-    add_header Public-Key-Pins 'pin-sha256="XrW0TkAtvDG7BrP+ptnF1MhRuUfu3AL7F5b97pMrunU="; pin-sha256="YLh1dUR9y6Kja30RrAn7JKnbQG/uEtLMkBgFF2Fuihg=";'; max-age=10000; includeSubDomains
+    add_header Public-Key-Pins 'pin-sha256="XrW0TkAtvDG7BrP+ptnF1MhRuUfu3AL7F5b97pMrunU="; pin-sha256="YLh1dUR9y6Kja30RrAn7JKnbQG/uEtLMkBgFF2Fuihg=";'; max-age=10000; includeSubDomains;
     
     # MANAGE ERRORS AND AVOID SERVE CERTAIN FILES # 
     
