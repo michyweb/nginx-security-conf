@@ -3,8 +3,8 @@ the best security conf for nginx
 
 ```bash
     
-    # nginx 2.2.15 | intermediate profile | OpenSSL 1.0.1e | link
-    # Oldest compatible clients: Firefox 1, Chrome 1, IE 7, Opera 5, Safari 1, Windows XP IE8, Android 2.3, Java 7
+    # nginx 1.10.1 | modern profile | OpenSSL 1.0.1e
+    # Oldest compatible clients: Firefox 27, Chrome 30, IE 11 on Windows 7, Edge, Opera 17, Safari 9, Android 5.0, and Java 8
     
 # don't send the nginx version number in error pages and Server header
 server_tokens off;
@@ -39,12 +39,12 @@ server {
     
     # to generate your dhparam.pem file, run in the terminal
     # openssl dhparam -out /etc/nginx/ssl/dhparam.pem 2048
-    ssl_dhparam /etc/nginx/ssl/dhparam.pem;
+    # ssl_dhparam /etc/nginx/ssl/dhparam.pem;
+    # We don't use DHE with the current cipher suites. 
     
+    ssl_protocols TLSv1.2;
+    ssl_ciphers "ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA256"
     ssl_prefer_server_ciphers on;
-    ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
-    
-    ssl_ciphers " En base a la versión del OpenSSL (que versión tiene?) "
     
     resolver 8.8.8.8;
     
@@ -58,6 +58,11 @@ server {
     # SECURITY HEADERS #
     
     # HSTS
+    # Recommended: If the site owner would like their domain to be included in the HSTS preload list https://hstspreload.org/ maintained by Chrome (and used by Firefox and Safari), then use the header below. 
+    # Sending the preload directive from your site can have PERMANENT CONSEQUENCES and prevent users from accessing your site and any of its subdomains if you find you need to switch 
+    # back to HTTP. Please read the details at hstspreload.appspot.com/#removal before sending the header with "preload".
+    # Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
+    # The `preload` flag indicates the site owner's consent to have their domain preloaded. The site owner still needs to then go and submit the domain to the list.
     add_header Strict-Transport-Security "max-age=31536000; includeSubdomains; preload";
     
     # Httpoxy vulnerability
@@ -70,15 +75,16 @@ server {
     add_header X-XSS-Protection "1; mode=block";
     add_header Referrer-Policy origin-when-cross-origin;
     proxy_cookie_path ~(.*) "$1; SameSite=strict";
+    X-Permitted-Cross-Domain-Policies: none;
     
     # nonce!!, upgrade-insecure-requests!!
     add_header Content-Security-Policy "upgrade-insecure-requests; default-src 'self'; script-src 'self' 'nonce-6B201A99C0EEA8C8' 'unsafe-eval'; object-src 'none'; style-src 'self' data: 'unsafe-inline';img-src 'self' data: assets.zendesk.com; media-src 'none'; frame-src 'self'; font-src 'self'; connect-src 'self'"
     
-    add_header Public-Key-Pins 'pin-sha256="XrW0TkAtvDG7BrP+ptnF1MhRuUfu3AL7F5b97pMrunU="; pin-sha256="YLh1dUR9y6Kja30RrAn7JKnbQG/uEtLMkBgFF2Fuihg=";' always;
+    add_header Public-Key-Pins 'pin-sha256="XrW0TkAtvDG7BrP+ptnF1MhRuUfu3AL7F5b97pMrunU="; pin-sha256="YLh1dUR9y6Kja30RrAn7JKnbQG/uEtLMkBgFF2Fuihg=";'; max-age=10000; includeSubDomains
     
     # MANAGE ERRORS AND AVOID SERVE CERTAIN FILES # 
     
-    add_header Allow "GET, POST, HEAD" always;
+    add_header Allow "GET, POST, HEAD";
     ## Only allow these request methods ##
     ## Do not accept DELETE, SEARCH and other methods ##
     if ($request_method !~ ^(GET|HEAD|POST)$ ) {
@@ -104,3 +110,10 @@ server {
 }
 
 ```
+
+Thanks to:
+
+1. https://mozilla.github.io/server-side-tls/ssl-config-generator/
+2. https://scotthelme.co.uk/
+3. https://report-uri.io/home/tools
+4. https://securityheaders.io/
