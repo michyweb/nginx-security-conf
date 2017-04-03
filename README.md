@@ -78,9 +78,9 @@ server {
     add_header X-Permitted-Cross-Domain-Policies none;
     
     # nonce!!, upgrade-insecure-requests!!
-    add_header Content-Security-Policy "upgrade-insecure-requests; default-src 'self'; script-src 'self' 'nonce-6B201A99C0EEA8C8' 'unsafe-eval'; object-src 'none'; style-src 'self' data: 'unsafe-inline';img-src 'self' data: assets.zendesk.com; media-src 'none'; frame-src 'self'; font-src 'self'; connect-src 'self'"
+    add_header Content-Security-Policy "upgrade-insecure-requests; default-src 'self'; script-src 'self' 'nonce-6B201A99C0EEA8C8' 'unsafe-eval'; object-src 'none'; style-src 'self' data: 'unsafe-inline';img-src 'self' data: 'none'; media-src 'none'; frame-src 'self'; font-src 'self'; connect-src 'self'"
     
-    add_header Public-Key-Pins 'pin-sha256="XrW0TkAtvDG7BrP+ptnF1MhRuUfu3AL7F5b97pMrunU="; pin-sha256="YLh1dUR9y6Kja30RrAn7JKnbQG/uEtLMkBgFF2Fuihg=";'; max-age=10000; includeSubDomains;
+    add_header Public-Key-Pins 'pin-sha256="XXXXXXXXXXXXXX"; pin-sha256="YYYYYYYYYYYYYYYYYY";'; max-age=10000; includeSubDomains;
     
     # MANAGE ERRORS AND AVOID SERVE CERTAIN FILES # 
     
