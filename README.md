@@ -67,6 +67,17 @@ server {
     
     # Httpoxy vulnerability
     proxy_set_header Proxy "";
+	
+	# http://blog.portswigger.net/2017/07/cracking-lens-targeting-https-hidden.html
+	proxy_set_header clientIPAddress "";
+    proxy_set_header x-forwarded-for "";
+    proxy_set_header client-ip "";
+    proxy_set_header forwarded "";
+    proxy_set_header from  "";
+    proxy_set_header referer "";
+    proxy_set_header x-client-ip "";
+    proxy_set_header x-originating-ip "";
+    proxy_set_header x-wap-profile "";
     
     add_header X-Content-Type-Options nosniff;
     add_header X-Frame-Options DENY;
