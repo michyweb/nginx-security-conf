@@ -68,9 +68,15 @@ server {
     
     # Httpoxy vulnerability
     proxy_set_header Proxy "";
-	
-	# http://blog.portswigger.net/2017/07/cracking-lens-targeting-https-hidden.html
-	proxy_set_header clientIPAddress "";
+    
+    # Prevent Information leaks
+    proxy_hide_header X-Powered-By;
+    proxy_hide_header Server;
+    proxy_hide_header X-AspNetMvc-Version;
+    proxy_hide_header X-AspNet-Version;
+    
+    # http://blog.portswigger.net/2017/07/cracking-lens-targeting-https-hidden.html
+    proxy_set_header clientIPAddress "";
     proxy_set_header x-forwarded-for "";
     proxy_set_header client-ip "";
     proxy_set_header forwarded "";
