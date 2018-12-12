@@ -42,9 +42,10 @@ server {
     # ssl_dhparam /etc/nginx/ssl/dhparam.pem;
     # We don't use DHE with the current cipher suites. 
     
-    ssl_protocols TLSv1.2;
-    ssl_ciphers "ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA256"
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_ciphers "ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256"
     ssl_prefer_server_ciphers on;
+    ssl_ecdh_curve secp384r1;
     
     resolver 8.8.8.8;
     
@@ -91,7 +92,21 @@ server {
     # nonce!!, upgrade-insecure-requests!!
     add_header Content-Security-Policy "upgrade-insecure-requests; default-src 'self'; script-src 'self' 'nonce-6B201A99C0EEA8C8' 'unsafe-eval'; object-src 'none'; style-src 'self' data: 'unsafe-inline';img-src 'self' data: 'none'; media-src 'none'; frame-src 'self'; font-src 'self'; connect-src 'self'"
     
-    add_header Public-Key-Pins 'pin-sha256="XXXXXXXXXXXXXX"; pin-sha256="YYYYYYYYYYYYYYYYYY";'; max-age=10000; includeSubDomains;
+    # Deprecated
+    # add_header Public-Key-Pins 'pin-sha256="XXXXXXXXXXXXXX"; pin-sha256="YYYYYYYYYYYYYYYYYY";'; max-age=10000; includeSubDomains;
+    
+    
+    location / {
+		try_files $uri $uri/ /index.php;
+	}
+
+	location ~ \.php$ {
+		proxy_set_header X-Real-IP  $remote_addr;
+		proxy_set_header X-Forwarded-For $remote_addr;
+		proxy_set_header Host $host;
+		proxy_pass http://127.0.0.1:8080;
+	}
+    
     
     # MANAGE ERRORS AND AVOID SERVE CERTAIN FILES # 
     
