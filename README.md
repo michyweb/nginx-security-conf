@@ -68,6 +68,10 @@ server {
 	
 	# Httpoxy vulnerability
 	proxy_set_header Proxy "";
+
+	# Request URL overwrite
+	proxy_set_header X-Original-URL "";
+	proxy_set_header X-Rewrite-URL "";
 	
 	# Prevent Information leaks
 	proxy_hide_header X-Powered-By;
