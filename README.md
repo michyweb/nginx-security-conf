@@ -18,8 +18,9 @@ server {
 
 
 server {
-	listen 443 ssl http2 default_server;
-	listen [::]:443 ssl http2 default_server;
+	# Avoid HTTP/2 downgrading. Instead, use HTTP/2 end to end. https://portswigger.net/research/http2
+	listen [::]:443 ssl http2 ipv6only=on default_server;
+    	listen 443 ssl http2 default_server;
 	
 	access_log /path/to/site/dir/logs/access.log;
 	error_log /path/to/site/dir/logs/error.log;
@@ -69,9 +70,14 @@ server {
 	# Httpoxy vulnerability
 	proxy_set_header Proxy "";
 
-	# Request URL overwrite
+	# Request headers for overwriting
 	proxy_set_header X-Original-URL "";
 	proxy_set_header X-Rewrite-URL "";
+	proxy_set_header X-Rewrite-URL "";
+	proxy_set_header X-Host "";
+	proxy_set_header X-Forwarded-Server "";
+	proxy_set_header X-HTTP-Host-Override "";
+	proxy_set_header Forwarded "";
 	
 	# Prevent Information leaks
 	proxy_hide_header X-Powered-By;
