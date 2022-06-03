@@ -2,7 +2,7 @@
 the best security conf for nginx
 
 ```bash
-# @author: @ricardo090489	
+# @author: @M1ChyB	
 # works in nginx/1.13.4 - OpenSSL 1.0.1t 
 	
 # don't send the nginx version number in error pages and Server header
@@ -29,6 +29,20 @@ server {
 	# index index.php index.html;
 	server_name example.com
 	
+	# Directive describes the zone, in which the session states are stored i.e. store in slimits.
+	# 1m can handle 32000 sessions with 32 bytes/session, set to 5m x 32000 session
+	limit_zone slimits $binary_remote_addr 5m;
+
+	# Control maximum number of simultaneous connections for one session i.e. 
+	# restricts the amount of connections from a single ip address 
+	limit_conn slimits 5;
+
+	# buffer policy
+	client_body_buffer_size 1K;
+	client_header_buffer_size 1k;
+	client_max_body_size 1k;
+	large_client_header_buffers 2 1k;
+
 	ssl_certificate /etc/nginx/ssl/star_forgott_com.crt;
 	ssl_certificate_key /etc/nginx/ssl/star_forgott_com.key;
 	
